@@ -1,0 +1,32 @@
+name: Generate Snake
+
+on:
+  schedule:
+    - cron: "0 */12 * * *"
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: Platane/snk/svg-only@v3
+        with:
+          github_user_name: nexvirosolution
+          outputs: |
+            dist/snake-dark.svg?color_snake=#2DE600&color_dots=#101810,#143d0a,#1f7a0a,#2DE600,#8dff66
+            dist/snake-light.svg?color_snake=#1a6b00&color_dots=#e8ebe0,#c4eeaa,#7be04a,#2DA600,#1a6b00
+
+      - uses: crazy-max/ghaction-github-pages@v3.3.0
+        with:
+          target_branch: output
+          build_dir: dist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
